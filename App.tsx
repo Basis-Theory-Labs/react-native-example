@@ -40,7 +40,11 @@ function App(): JSX.Element {
         <Pressable
           style={styles.tokenize}
           onPress={async () => {
-            setText(await tokenize());
+            try {
+              setText(await tokenize());
+            } catch (e: any) {
+              setText(e.toString());
+            }
           }}>
           <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
         </Pressable>

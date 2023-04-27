@@ -32,6 +32,10 @@ class SsnTextElement(context: ReactApplicationContext) :
             AppCompatResources.getDrawable(context, R.drawable.rounded_edit_text)
         ssnTextElement.textColor = Color.BLACK
 
+        ssnTextElement.addChangeEventListener {
+            println(it)
+        }
+
         return ssnTextElement
     }
 
@@ -40,12 +44,7 @@ class SsnTextElement(context: ReactApplicationContext) :
     fun tokenize(promise: Promise) {
         coroutineScope.launch {
             try {
-                val body = object {
-                    val type = "token"
-                    val data = object {
-                        val ssn = ssnTextElement
-                    }
-                }
+                val body =  ssnTextElement
 
                 val response = withContext(context = Dispatchers.IO) {
                     bt.tokenize(body)
@@ -64,6 +63,4 @@ class SsnTextElement(context: ReactApplicationContext) :
     override fun getName(): String {
         return "SsnTextElement"
     }
-
-    val REACT_CLASS = "RCTImageView"
 }
