@@ -18,7 +18,7 @@ import kotlinx.coroutines.*
 
 class SsnTextElement(context: ReactApplicationContext) :
     SimpleViewManager<TextElement?>() {
-    private val apiKey = "key_7jc18XCxYYozHbepjpWHqU"
+    private val apiKey = "your_api_key"
     private val bt = BasisTheoryElements.builder().apiKey(apiKey).build()
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private lateinit var ssnTextElement: TextElement
