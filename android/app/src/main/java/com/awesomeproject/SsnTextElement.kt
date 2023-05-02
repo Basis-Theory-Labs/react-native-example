@@ -18,13 +18,14 @@ import kotlinx.coroutines.*
 
 class SsnTextElement(context: ReactApplicationContext) :
     SimpleViewManager<TextElement?>() {
-    private val apiKey = "test_1234567890"
+    private val apiKey = "key_7jc18XCxYYozHbepjpWHqU"
     private val bt = BasisTheoryElements.builder().apiKey(apiKey).build()
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    private val ssnTextElement: TextElement = TextElement(context)
+    private lateinit var ssnTextElement: TextElement
 
     override fun createViewInstance(context: ThemedReactContext): TextElement {
-        ssnTextElement.setPadding(20, 20, 20, 20)
+        ssnTextElement = TextElement(context)
+        ssnTextElement.setPadding(10, 10, 10, 10)
         ssnTextElement.hint = "Enter SSN"
         ssnTextElement.keyboardType = KeyboardType.NUMBER
         ssnTextElement.mask = ElementMask("###-##-####")
