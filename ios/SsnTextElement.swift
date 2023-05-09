@@ -63,5 +63,11 @@ import BasisTheoryElements
     }
   }
   
+  @objc public func dismissKeyboard() {
+    DispatchQueue.main.async {
+      self.ssnTextElement.endEditing(true)
+    }
+  }
+  
   @objc static override func requiresMainQueueSetup() -> Bool { return true }
 }

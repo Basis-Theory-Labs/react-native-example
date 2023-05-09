@@ -16,6 +16,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 interface SsnTextElementProps {
@@ -29,27 +30,33 @@ const {SsnTextElement: SsnTextElementModule} = NativeModules;
 
 const tokenize = () => SsnTextElementModule.tokenize() as Promise<string>;
 
+const dismissSsnKeyboard = () => SsnTextElementModule.dismissKeyboard() as void;
+
 function App(): JSX.Element {
   const [text, setText] = useState<string>();
 
   return (
     <SafeAreaView style={styles.view}>
       <StatusBar />
-      <View style={styles.container}>
-        <SsnTextElement style={styles.ssnTextElement} />
-        <Pressable
-          style={styles.tokenize}
-          onPress={async () => {
-            try {
-              setText(await tokenize());
-            } catch (e: any) {
-              setText(e.toString());
-            }
-          }}>
-          <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
-        </Pressable>
-        <Text style={styles.tokenText}>{text}</Text>
-      </View>
+        <TouchableWithoutFeedback onPress={dismissSsnKeyboard}>
+          <View style={styles.container}>
+            <TouchableWithoutFeedback style={styles.ssnTextElement}>
+              <SsnTextElement style={styles.ssnTextElement} />
+            </TouchableWithoutFeedback>
+            <Pressable
+              style={styles.tokenize}
+              onPress={async () => {
+                try {
+                  setText(await tokenize());
+                } catch (e: any) {
+                  setText(e.toString());
+                }
+              }}>
+              <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
+            </Pressable>
+            <Text style={styles.tokenText}>{text}</Text>
+          </View>
+        </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }
