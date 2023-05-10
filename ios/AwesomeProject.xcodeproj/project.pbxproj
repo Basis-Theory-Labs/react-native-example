@@ -14,6 +14,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-AwesomeProject-AwesomeProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-AwesomeProject-AwesomeProjectTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		921217F72A0C0253008272E3 /* TextElementEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 921217F62A0C0253008272E3 /* TextElementEvents.m */; };
+		921217F92A0C0289008272E3 /* TextElementEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921217F82A0C0289008272E3 /* TextElementEvents.swift */; };
+		921217FB2A0C0653008272E3 /* TextElementRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921217FA2A0C0653008272E3 /* TextElementRegistry.swift */; };
 		92281FA429A818AB008F7FDD /* BasisTheoryElements in Frameworks */ = {isa = PBXBuildFile; productRef = 92281FA329A818AB008F7FDD /* BasisTheoryElements */; };
 		92281FA629A81D9F008F7FDD /* SsnTextElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 92281FA529A81D9F008F7FDD /* SsnTextElement.m */; };
 		92281FA929A81F2B008F7FDD /* SsnTextElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92281FA829A81F2B008F7FDD /* SsnTextElement.swift */; };
@@ -46,6 +49,9 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-AwesomeProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AwesomeProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AwesomeProject/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-AwesomeProject-AwesomeProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomeProject-AwesomeProjectTests.release.xcconfig"; path = "Target Support Files/Pods-AwesomeProject-AwesomeProjectTests/Pods-AwesomeProject-AwesomeProjectTests.release.xcconfig"; sourceTree = "<group>"; };
+		921217F62A0C0253008272E3 /* TextElementEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextElementEvents.m; sourceTree = "<group>"; };
+		921217F82A0C0289008272E3 /* TextElementEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextElementEvents.swift; sourceTree = "<group>"; };
+		921217FA2A0C0653008272E3 /* TextElementRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextElementRegistry.swift; sourceTree = "<group>"; };
 		92281FA529A81D9F008F7FDD /* SsnTextElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SsnTextElement.m; sourceTree = "<group>"; };
 		92281FA729A81F2B008F7FDD /* AwesomeProject-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AwesomeProject-Bridging-Header.h"; sourceTree = "<group>"; };
 		92281FA829A81F2B008F7FDD /* SsnTextElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SsnTextElement.swift; sourceTree = "<group>"; };
@@ -101,6 +107,9 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				92281FA529A81D9F008F7FDD /* SsnTextElement.m */,
 				92281FA829A81F2B008F7FDD /* SsnTextElement.swift */,
+				921217F62A0C0253008272E3 /* TextElementEvents.m */,
+				921217F82A0C0289008272E3 /* TextElementEvents.swift */,
+				921217FA2A0C0653008272E3 /* TextElementRegistry.swift */,
 				92281FA729A81F2B008F7FDD /* AwesomeProject-Bridging-Header.h */,
 			);
 			name = AwesomeProject;
@@ -429,7 +438,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				921217F92A0C0289008272E3 /* TextElementEvents.swift in Sources */,
+				921217F72A0C0253008272E3 /* TextElementEvents.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				921217FB2A0C0653008272E3 /* TextElementRegistry.swift in Sources */,
 				92281FA929A81F2B008F7FDD /* SsnTextElement.swift in Sources */,
 				92281FA629A81D9F008F7FDD /* SsnTextElement.m in Sources */,
 			);
@@ -729,8 +741,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Basis-Theory/basistheory-ios";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

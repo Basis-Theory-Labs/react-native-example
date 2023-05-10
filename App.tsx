@@ -5,10 +5,11 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   HostComponent,
   NativeModules,
+  NativeEventEmitter,
   Pressable,
   requireNativeComponent,
   SafeAreaView,
@@ -19,6 +20,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
+// SsnTextElement: TextElementUITextField component instantiation and function definition
 interface SsnTextElementProps {
   style: Record<string, unknown>;
 }
@@ -32,8 +34,40 @@ const tokenize = () => SsnTextElementModule.tokenize() as Promise<string>;
 
 const dismissSsnKeyboard = () => SsnTextElementModule.dismissKeyboard() as void;
 
+const getSsnTextElementId = (callback: (id: string) => void) => SsnTextElementModule.getId(callback) as string;
+
+// TextElementEvents: RCTEventEmitter instantiation and function definition
+const {TextElementEvents: TextElementEventsModule} = NativeModules;
+
+const startListeningToElementEvents = (id: string) => TextElementEventsModule.startListening(id) as void;
+
+const TextElementEventsEmitter = new NativeEventEmitter(TextElementEventsModule);
+
+export const addElementEventListener = (callback: (elementEvent: Record<string, unknown>) => void) =>
+  TextElementEventsEmitter.addListener("ElementEvents", callback);
+
+// Main React Native app view
 function App(): JSX.Element {
   const [text, setText] = useState<string>();
+  const [isValid, setIsValid] = useState<boolean>();
+  const [isComplete, setIsComplete] = useState<boolean>();
+  const [isMaskSatisified, setIsMaskSatisfied] = useState<boolean>();
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
+
+  useEffect(() => {
+    addElementEventListener((elementEvent) => {
+      if (elementEvent) {
+        setIsComplete(elementEvent.complete as boolean);
+        setIsValid(elementEvent.valid as boolean);
+        setIsMaskSatisfied(elementEvent.maskSatisfied as boolean);
+        setIsEmpty(elementEvent.empty as boolean);
+      }
+    });
+
+    getSsnTextElementId((id) => {
+        startListeningToElementEvents(id);
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.view}>
@@ -54,6 +88,10 @@ function App(): JSX.Element {
               }}>
               <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
             </Pressable>
+            <Text style={styles.elementEventText}>{`SSN is ${isValid ? 'valid' : 'invalid'}`}</Text>
+            <Text style={styles.elementEventText}>{`SSN is ${isComplete ? 'complete' : 'incomplete'}`}</Text>
+            <Text style={styles.elementEventText}>{`SSN mask is ${isMaskSatisified ? 'satisfied' : 'unsatisfied'}`}</Text>
+            <Text style={styles.elementEventText}>{`SSN is ${isEmpty ? 'empty' : 'not empty'}`}</Text>
             <Text style={styles.tokenText}>{text}</Text>
           </View>
         </TouchableWithoutFeedback>
@@ -94,6 +132,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  elementEventText: {
+    fontWeight: 'bold',
+    marginVertical: 5,
+    marginLeft: 10
   },
   tokenText: {
     marginTop: 25,

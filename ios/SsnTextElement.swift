@@ -11,6 +11,7 @@ import BasisTheoryElements
 
 @objc(SsnTextElement) class SsnTextElement: RCTViewManager {
   let ssnTextElement = TextElementUITextField()
+  let id = UUID().uuidString
   
   override func view() -> UIView! {
     let regexDigit = try! NSRegularExpression(pattern: "\\d")
@@ -27,8 +28,9 @@ import BasisTheoryElements
       regexDigit,
       regexDigit,
     ]
+    let ssnRegex = try! NSRegularExpression(pattern: "^\\d{3}-\\d{2}-\\d{4}$")
     
-    try! ssnTextElement.setConfig(options: TextElementOptions(mask: ssnMask))
+    try! ssnTextElement.setConfig(options: TextElementOptions(mask: ssnMask, validation: ssnRegex))
     
     ssnTextElement.layer.cornerRadius = 16.0
     ssnTextElement.layer.borderWidth = 1.0
@@ -38,6 +40,8 @@ import BasisTheoryElements
     ssnTextElement.placeholder = "Enter SSN"
     ssnTextElement.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     ssnTextElement.leftViewMode = .always
+    
+    TextElementRegistry.registerTextElement(id: id, ssnElement: ssnTextElement)
     
     return ssnTextElement
   }
@@ -67,6 +71,10 @@ import BasisTheoryElements
     DispatchQueue.main.async {
       self.ssnTextElement.endEditing(true)
     }
+  }
+  
+  @objc public func getId(_ callback: RCTResponseSenderBlock) {
+    callback([id])
   }
   
   @objc static override func requiresMainQueueSetup() -> Bool { return true }
