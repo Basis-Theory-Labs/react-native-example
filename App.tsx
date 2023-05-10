@@ -38,25 +38,25 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={styles.view}>
       <StatusBar />
-        <TouchableWithoutFeedback onPress={dismissSsnKeyboard}>
-          <View style={styles.container}>
-            <TouchableWithoutFeedback style={styles.ssnTextElement}>
-              <SsnTextElement style={styles.ssnTextElement} />
-            </TouchableWithoutFeedback>
-            <Pressable
-              style={styles.tokenize}
-              onPress={async () => {
-                try {
-                  setText(await tokenize());
-                } catch (e: any) {
-                  setText(e.toString());
-                }
-              }}>
-              <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
-            </Pressable>
-            <Text style={styles.tokenText}>{text}</Text>
-          </View>
-        </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={dismissSsnKeyboard}>
+        <View style={styles.container}>
+          <TouchableWithoutFeedback style={styles.ssnTextElement}>
+            <SsnTextElement style={styles.ssnTextElement} />
+          </TouchableWithoutFeedback>
+          <Pressable
+            style={styles.tokenize}
+            onPress={async () => {
+              try {
+                setText(await tokenize());
+              } catch (e: any) {
+                setText(e.toString());
+              }
+            }}>
+            <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
+          </Pressable>
+          <Text style={styles.tokenText}>{text}</Text>
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }

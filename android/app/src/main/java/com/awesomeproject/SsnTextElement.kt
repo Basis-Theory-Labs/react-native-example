@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
+import android.app.Activity
+import android.view.inputmethod.InputMethodManager
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.TextElement
@@ -16,9 +18,8 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.*
 
-class SsnTextElement(context: ReactApplicationContext) :
-    SimpleViewManager<TextElement?>() {
-    private val apiKey = "your_api_key"
+class SsnTextElement(private val context: ReactApplicationContext) : SimpleViewManager<TextElement?>() {
+    private val apiKey = "key_7jc18XCxYYozHbepjpWHqU"
     private val bt = BasisTheoryElements.builder().apiKey(apiKey).build()
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private lateinit var ssnTextElement: TextElement
@@ -35,6 +36,10 @@ class SsnTextElement(context: ReactApplicationContext) :
 
         ssnTextElement.addChangeEventListener {
             println(it)
+        }
+
+        ssnTextElement.addBlurEventListener {
+            dismissKeyboard()
         }
 
         return ssnTextElement
@@ -59,6 +64,12 @@ class SsnTextElement(context: ReactApplicationContext) :
                 promise.reject("Tokenizing error", e)
             }
         }
+    }
+
+    @ReactMethod
+    fun dismissKeyboard() {
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(ssnTextElement.windowToken, 0)
     }
 
     override fun getName(): String {
