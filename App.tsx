@@ -16,9 +16,9 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback
 } from 'react-native';
-import { addElementEventListener, ElementEvent } from './ElementEventEmitter';
+import { ElementEvent, addElementEventChangeListener } from './ElementEventEmitter';
 
 // SsnTextElement: TextElementUITextField component instantiation and function definition
 interface SsnTextElementProps {
@@ -45,7 +45,7 @@ function App(): JSX.Element {
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
   useEffect(() => {
-    addElementEventListener(getSsnTextElementId, (elementEvent: ElementEvent) => {
+    addElementEventChangeListener(getSsnTextElementId, (elementEvent: ElementEvent) => {
       setIsComplete(elementEvent.complete as boolean);
       setIsValid(elementEvent.valid as boolean);
       setIsMaskSatisfied(elementEvent.maskSatisfied as boolean);

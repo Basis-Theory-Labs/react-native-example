@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Basis-Theory/basistheory-ios",
       "state" : {
-        "revision" : "c18f90cc2ade32d8d6871f7d862f50c130db3045",
-        "version" : "2.0.1"
+        "revision" : "8acc6c4366ded26da57f665f1d36dfa5f9448228",
+        "version" : "2.0.2"
       }
     },
     {

@@ -18,7 +18,7 @@ interface ElementEvent {
   empty: boolean;
 }
 
-export const addElementEventListener = (getSsnTextElementId: GetSsnTextElementId, elementEventCallback: ElementEventCallback) => {
+export const addElementEventChangeListener = (getSsnTextElementId: GetSsnTextElementId, elementEventCallback: ElementEventCallback) => {
   if (Platform.OS === 'ios') {
     const { TextElementEvents: TextElementEventsModuleForIos } = NativeModules;
 
@@ -38,7 +38,7 @@ export const addElementEventListener = (getSsnTextElementId: GetSsnTextElementId
   } else if (Platform.OS === 'android') {
     const TextElementEventsEmitterForAndroid = new NativeEventEmitter(NativeModules.SsnTextElementModule);
 
-    TextElementEventsEmitterForAndroid.addListener('change_events', (androidElementEvent: AndroidElementEvent) => {
+    TextElementEventsEmitterForAndroid.addListener('change_event', (androidElementEvent: AndroidElementEvent) => {
       const elementEvent: ElementEvent = {
         complete: androidElementEvent.isComplete,
         valid: androidElementEvent.isValid,
@@ -47,8 +47,8 @@ export const addElementEventListener = (getSsnTextElementId: GetSsnTextElementId
       };
 
       elementEventCallback(elementEvent);
-    })
+    });
   }
-};
+}
 
-export type { ElementEvent };
+export type { ElementEvent, AndroidElementEvent };
