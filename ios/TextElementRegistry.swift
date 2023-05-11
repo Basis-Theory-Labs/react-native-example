@@ -13,8 +13,8 @@ class TextElementRegistry {
   
   private init() {}
   
-  static func registerTextElement(id: String, ssnElement: TextElementUITextField) {
-    registeredTextElements[id] = ssnElement
+  static func registerTextElement(id: String, textElement: TextElementUITextField) {
+    registeredTextElements[id] = textElement
   }
   
   static func getRegisteredTextElement(id: String) -> TextElementUITextField? {

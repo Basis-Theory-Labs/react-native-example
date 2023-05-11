@@ -41,7 +41,7 @@ import BasisTheoryElements
     ssnTextElement.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     ssnTextElement.leftViewMode = .always
     
-    TextElementRegistry.registerTextElement(id: id, ssnElement: ssnTextElement)
+    TextElementRegistry.registerTextElement(id: id, textElement: ssnTextElement)
     
     return ssnTextElement
   }
