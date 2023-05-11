@@ -10,15 +10,18 @@ import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.TextElement
 import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.validation.RegexValidator
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.*
 
-class SsnTextElement(private val context: ReactApplicationContext) : SimpleViewManager<TextElement?>() {
+class SsnTextElement(private val reactAppContext: ReactApplicationContext) : SimpleViewManager<TextElement?>() {
     private val apiKey = "your_api_key"
     private val bt = BasisTheoryElements.builder().apiKey(apiKey).build()
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -30,12 +33,20 @@ class SsnTextElement(private val context: ReactApplicationContext) : SimpleViewM
         ssnTextElement.hint = "Enter SSN"
         ssnTextElement.keyboardType = KeyboardType.NUMBER
         ssnTextElement.mask = ElementMask("###-##-####")
+        ssnTextElement.validator = RegexValidator(regex = Regex("^\\d{3}-\\d{2}-\\d{4}$"))
         ssnTextElement.background =
             AppCompatResources.getDrawable(context, R.drawable.rounded_edit_text)
         ssnTextElement.textColor = Color.BLACK
 
-        ssnTextElement.addChangeEventListener {
-            println(it)
+        ssnTextElement.addChangeEventListener { it ->
+            val params = Arguments.createMap();
+            params.putBoolean("isValid", it.isValid)
+            params.putBoolean("isComplete", it.isComplete)
+            params.putBoolean("isMaskSatisfied", it.isMaskSatisfied)
+            params.putBoolean("isEmpty", it.isEmpty)
+
+            reactAppContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                   .emit("change_event", params)
         }
 
         ssnTextElement.addBlurEventListener {
@@ -43,6 +54,10 @@ class SsnTextElement(private val context: ReactApplicationContext) : SimpleViewM
         }
 
         return ssnTextElement
+    }
+
+    override fun getName(): String {
+        return "SsnTextElement"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -68,11 +83,7 @@ class SsnTextElement(private val context: ReactApplicationContext) : SimpleViewM
 
     @ReactMethod
     fun dismissKeyboard() {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager?.hideSoftInputFromWindow(ssnTextElement.windowToken, 0)
-    }
-
-    override fun getName(): String {
-        return "SsnTextElement"
+        val inputMethodManager = reactAppContext.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(ssnTextElement.windowToken, 0)
     }
 }
