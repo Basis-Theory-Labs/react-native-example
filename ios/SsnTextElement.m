@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "React/RCTBridgeModule.h"
 #import "React/RCTViewManager.h"
-#import <React/RCTEventEmitter.h>
 
 @interface RCT_EXTERN_MODULE(SsnTextElement, RCTViewManager)
 
@@ -18,6 +17,10 @@ RCT_EXTERN_METHOD(
                   )
 
 RCT_EXTERN_METHOD(dismissKeyboard)
+
+RCT_EXTERN_METHOD(
+                  getId: (RCTResponseSenderBlock) callback
+)
 
 @end
 

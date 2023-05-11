@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   HostComponent,
   NativeModules,
@@ -18,7 +18,12 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {
+  ElementEvent,
+  addElementEventChangeListener,
+} from './ElementEventEmitter';
 
+// SsnTextElement: TextElementUITextField component instantiation and function definition
 interface SsnTextElementProps {
   style: Record<string, unknown>;
 }
@@ -32,8 +37,28 @@ const tokenize = () => SsnTextElementModule.tokenize() as Promise<string>;
 
 const dismissSsnKeyboard = () => SsnTextElementModule.dismissKeyboard() as void;
 
+const getSsnTextElementId = (callback: (id: string) => void) =>
+  SsnTextElementModule.getId(callback) as string;
+
+// Main React Native app view
 function App(): JSX.Element {
   const [text, setText] = useState<string>();
+  const [isValid, setIsValid] = useState<boolean>();
+  const [isComplete, setIsComplete] = useState<boolean>();
+  const [isMaskSatisfied, setIsMaskSatisfied] = useState<boolean>();
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
+
+  useEffect(() => {
+    addElementEventChangeListener(
+      getSsnTextElementId,
+      (elementEvent: ElementEvent) => {
+        setIsComplete(elementEvent.complete as boolean);
+        setIsValid(elementEvent.valid as boolean);
+        setIsMaskSatisfied(elementEvent.maskSatisfied as boolean);
+        setIsEmpty(elementEvent.empty as boolean);
+      },
+    );
+  }, []);
 
   return (
     <SafeAreaView style={styles.view}>
@@ -54,6 +79,18 @@ function App(): JSX.Element {
             }}>
             <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
           </Pressable>
+          <Text style={styles.elementEventText}>{`SSN is ${
+            isValid ? 'valid' : 'invalid'
+          }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN is ${
+            isComplete ? 'complete' : 'incomplete'
+          }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN mask is ${
+            isMaskSatisfied ? 'satisfied' : 'not satisfied'
+          }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN is ${
+            isEmpty ? 'empty' : 'not empty'
+          }`}</Text>
           <Text style={styles.tokenText}>{text}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -94,6 +131,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  elementEventText: {
+    fontWeight: 'bold',
+    marginVertical: 5,
+    marginLeft: 10,
   },
   tokenText: {
     marginTop: 25,
