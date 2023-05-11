@@ -1,11 +1,4 @@
-import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
-
-interface AndroidElementEvent {
-  isComplete: boolean;
-  isValid: boolean;
-  isMaskSatisfied: boolean;
-  isEmpty: boolean;
-}
+import {NativeModules, NativeEventEmitter, Platform} from 'react-native';
 
 type ElementEventCallback = (elementEvent: ElementEvent) => void;
 
@@ -18,37 +11,42 @@ interface ElementEvent {
   empty: boolean;
 }
 
-export const addElementEventChangeListener = (getSsnTextElementId: GetSsnTextElementId, elementEventCallback: ElementEventCallback) => {
+export const addElementEventChangeListener = (
+  getSsnTextElementId: GetSsnTextElementId,
+  elementEventCallback: ElementEventCallback,
+) => {
   if (Platform.OS === 'ios') {
-    const { TextElementEvents: TextElementEventsModuleForIos } = NativeModules;
+    const {TextElementEvents: TextElementEventsModuleForIos} = NativeModules;
 
-    const startListeningToElementEventsForIos = (id: string) => TextElementEventsModuleForIos.startListening(id) as void;
+    const startListeningToElementEventsForIos = (id: string) =>
+      TextElementEventsModuleForIos.startListening(id) as void;
 
-    const TextElementEventsEmitterForIos = new NativeEventEmitter(TextElementEventsModuleForIos);
+    const TextElementEventsEmitterForIos = new NativeEventEmitter(
+      TextElementEventsModuleForIos,
+    );
 
-    TextElementEventsEmitterForIos.addListener("ElementEvents", (iosElementEvent) => {
-      if (iosElementEvent) {
-        elementEventCallback(iosElementEvent);
-      }
-    });
+    TextElementEventsEmitterForIos.addListener(
+      'ElementEvents',
+      iosElementEvent => {
+        if (iosElementEvent) {
+          elementEventCallback(iosElementEvent);
+        }
+      },
+    );
 
-    getSsnTextElementId((id) => {
+    getSsnTextElementId(id => {
       startListeningToElementEventsForIos(id);
     });
   } else if (Platform.OS === 'android') {
-    const TextElementEventsEmitterForAndroid = new NativeEventEmitter(NativeModules.SsnTextElementModule);
+    const TextElementEventsEmitterForAndroid = new NativeEventEmitter(
+      NativeModules.SsnTextElementModule,
+    );
 
-    TextElementEventsEmitterForAndroid.addListener('change_event', (androidElementEvent: AndroidElementEvent) => {
-      const elementEvent: ElementEvent = {
-        complete: androidElementEvent.isComplete,
-        valid: androidElementEvent.isValid,
-        maskSatisfied: androidElementEvent.isMaskSatisfied,
-        empty: androidElementEvent.isEmpty
-      };
-
-      elementEventCallback(elementEvent);
-    });
+    TextElementEventsEmitterForAndroid.addListener(
+      'change_event',
+      elementEvent => elementEventCallback(elementEvent),
+    );
   }
-}
+};
 
-export type { ElementEvent, AndroidElementEvent };
+export type {ElementEvent};

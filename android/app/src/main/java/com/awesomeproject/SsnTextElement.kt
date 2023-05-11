@@ -40,10 +40,10 @@ class SsnTextElement(private val reactAppContext: ReactApplicationContext) : Sim
 
         ssnTextElement.addChangeEventListener { it ->
             val params = Arguments.createMap();
-            params.putBoolean("isValid", it.isValid)
-            params.putBoolean("isComplete", it.isComplete)
-            params.putBoolean("isMaskSatisfied", it.isMaskSatisfied)
-            params.putBoolean("isEmpty", it.isEmpty)
+            params.putBoolean("valid", it.isValid)
+            params.putBoolean("complete", it.isComplete)
+            params.putBoolean("maskSatisfied", it.isMaskSatisfied)
+            params.putBoolean("empty", it.isEmpty)
 
             reactAppContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                    .emit("change_event", params)
