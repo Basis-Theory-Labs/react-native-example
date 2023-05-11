@@ -5,11 +5,10 @@
  * @format
  */
 
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   HostComponent,
   NativeModules,
-  NativeEventEmitter,
   Pressable,
   requireNativeComponent,
   SafeAreaView,
@@ -19,6 +18,7 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { addElementEventListener, ElementEvent } from './ElementEventEmitter';
 
 // SsnTextElement: TextElementUITextField component instantiation and function definition
 interface SsnTextElementProps {
@@ -28,23 +28,13 @@ interface SsnTextElementProps {
 const SsnTextElement: HostComponent<SsnTextElementProps> =
   requireNativeComponent('SsnTextElement');
 
-const {SsnTextElement: SsnTextElementModule} = NativeModules;
+const { SsnTextElement: SsnTextElementModule } = NativeModules;
 
 const tokenize = () => SsnTextElementModule.tokenize() as Promise<string>;
 
 const dismissSsnKeyboard = () => SsnTextElementModule.dismissKeyboard() as void;
 
 const getSsnTextElementId = (callback: (id: string) => void) => SsnTextElementModule.getId(callback) as string;
-
-// TextElementEvents: RCTEventEmitter instantiation and function definition
-const {TextElementEvents: TextElementEventsModule} = NativeModules;
-
-const startListeningToElementEvents = (id: string) => TextElementEventsModule.startListening(id) as void;
-
-const TextElementEventsEmitter = new NativeEventEmitter(TextElementEventsModule);
-
-export const addElementEventListener = (callback: (elementEvent: Record<string, unknown>) => void) =>
-  TextElementEventsEmitter.addListener("ElementEvents", callback);
 
 // Main React Native app view
 function App(): JSX.Element {
@@ -55,46 +45,44 @@ function App(): JSX.Element {
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
   useEffect(() => {
-    addElementEventListener((elementEvent) => {
-      if (elementEvent) {
-        setIsComplete(elementEvent.complete as boolean);
-        setIsValid(elementEvent.valid as boolean);
-        setIsMaskSatisfied(elementEvent.maskSatisfied as boolean);
-        setIsEmpty(elementEvent.empty as boolean);
-      }
-    });
-
-    getSsnTextElementId((id) => {
-        startListeningToElementEvents(id);
+    addElementEventListener(getSsnTextElementId, (elementEvent: ElementEvent) => {
+      setIsComplete(elementEvent.complete as boolean);
+      setIsValid(elementEvent.valid as boolean);
+      setIsMaskSatisfied(elementEvent.maskSatisfied as boolean);
+      setIsEmpty(elementEvent.empty as boolean);
     });
   }, []);
 
   return (
     <SafeAreaView style={styles.view}>
       <StatusBar />
-        <TouchableWithoutFeedback onPress={dismissSsnKeyboard}>
-          <View style={styles.container}>
-            <TouchableWithoutFeedback style={styles.ssnTextElement}>
-              <SsnTextElement style={styles.ssnTextElement} />
-            </TouchableWithoutFeedback>
-            <Pressable
-              style={styles.tokenize}
-              onPress={async () => {
-                try {
-                  setText(await tokenize());
-                } catch (e: any) {
-                  setText(e.toString());
-                }
-              }}>
-              <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
-            </Pressable>
-            <Text style={styles.elementEventText}>{`SSN is ${isValid ? 'valid' : 'invalid'}`}</Text>
-            <Text style={styles.elementEventText}>{`SSN is ${isComplete ? 'complete' : 'incomplete'}`}</Text>
-            <Text style={styles.elementEventText}>{`SSN mask is ${isMaskSatisified ? 'satisfied' : 'unsatisfied'}`}</Text>
-            <Text style={styles.elementEventText}>{`SSN is ${isEmpty ? 'empty' : 'not empty'}`}</Text>
-            <Text style={styles.tokenText}>{text}</Text>
-          </View>
-        </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={dismissSsnKeyboard}>
+        <View style={styles.container}>
+          <TouchableWithoutFeedback style={styles.ssnTextElement}>
+            <SsnTextElement style={styles.ssnTextElement} />
+          </TouchableWithoutFeedback>
+          <Pressable
+            style={styles.tokenize}
+            onPress={async () => {
+              try {
+                setText(await tokenize());
+              } catch (e: any) {
+                setText(e.toString());
+              }
+            }}>
+            <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
+          </Pressable>
+          <Text style={styles.elementEventText}>{`SSN is ${isValid ? 'valid' : 'invalid'
+            }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN is ${isComplete ? 'complete' : 'incomplete'
+            }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN mask is ${isMaskSatisified ? 'satisfied' : 'not satisfied'
+            }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN is ${isEmpty ? 'empty' : 'not empty'
+            }`}</Text>
+          <Text style={styles.tokenText}>{text}</Text>
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }
