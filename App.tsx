@@ -17,6 +17,7 @@ import {
   Text,
   View,
   TouchableWithoutFeedback,
+  NativeEventEmitter,
 } from 'react-native';
 
 interface SsnTextElementProps {
@@ -32,8 +33,21 @@ const tokenize = () => SsnTextElementModule.tokenize() as Promise<string>;
 
 const dismissSsnKeyboard = () => SsnTextElementModule.dismissKeyboard() as void;
 
+const eventEmitter = new NativeEventEmitter(NativeModules.SsnTextElementModule);
+
 function App(): JSX.Element {
   const [text, setText] = useState<string>();
+  const [isValid, setIsValid] = useState<boolean>();
+  const [isComplete, setIsComplete] = useState<boolean>();
+  const [isMaskSatisified, setIsMaskSatisfied] = useState<boolean>();
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
+
+  eventEmitter.addListener('change_event', params => {
+    setIsValid(params.isValid);
+    setIsComplete(params.isComplete);
+    setIsMaskSatisfied(params.isMaskSatisfied);
+    setIsEmpty(params.isEmpty);
+  });
 
   return (
     <SafeAreaView style={styles.view}>
@@ -54,6 +68,18 @@ function App(): JSX.Element {
             }}>
             <Text style={styles.tokenizeText}>{'Tokenize'}</Text>
           </Pressable>
+          <Text style={styles.elementEventText}>{`SSN is ${
+            isValid ? 'valid' : 'invalid'
+          }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN is ${
+            isComplete ? 'complete' : 'incomplete'
+          }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN mask is ${
+            isMaskSatisified ? 'satisfied' : 'unsatisfied'
+          }`}</Text>
+          <Text style={styles.elementEventText}>{`SSN is ${
+            isEmpty ? 'empty' : 'not empty'
+          }`}</Text>
           <Text style={styles.tokenText}>{text}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -94,6 +120,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  elementEventText: {
+    fontWeight: 'bold',
+    marginVertical: 5,
+    marginLeft: 10,
   },
   tokenText: {
     marginTop: 25,
