@@ -22,7 +22,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.*
 
 class SsnTextElement(private val reactAppContext: ReactApplicationContext) : SimpleViewManager<TextElement?>() {
-    private val apiKey = "your_api_key"
+    private val apiKey = "key_7jc18XCxYYozHbepjpWHqU"
     private val bt = BasisTheoryElements.builder().apiKey(apiKey).build()
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private lateinit var ssnTextElement: TextElement
@@ -75,6 +75,8 @@ class SsnTextElement(private val reactAppContext: ReactApplicationContext) : Sim
                 val prettyPrintedJson = gson.toJson(response)
 
                 promise.resolve(prettyPrintedJson)
+
+                ssnTextElement.setText("")
             } catch (e: Exception) {
                 promise.reject("Tokenizing error", e)
             }
