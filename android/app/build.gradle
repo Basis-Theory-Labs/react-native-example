@@ -155,7 +155,7 @@ dependencies {
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 
-    implementation('com.github.basis-theory:basistheory-android:1.6.0') {
+    implementation('com.github.basis-theory:basistheory-android:4.1.1') {
         exclude group: 'javax.ws.rs', module: 'javax.ws.rs-api'
     }
 

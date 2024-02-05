@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.TextElement
 import com.basistheory.android.view.mask.ElementMask
@@ -31,7 +31,7 @@ class SsnTextElement(private val reactAppContext: ReactApplicationContext) : Sim
         ssnTextElement = TextElement(context)
         ssnTextElement.setPadding(10, 10, 10, 10)
         ssnTextElement.hint = "Enter SSN"
-        ssnTextElement.keyboardType = KeyboardType.NUMBER
+        ssnTextElement.inputType = InputType.NUMBER
         ssnTextElement.mask = ElementMask("###-##-####")
         ssnTextElement.validator = RegexValidator(regex = Regex("^\\d{3}-\\d{2}-\\d{4}$"))
         ssnTextElement.background =
